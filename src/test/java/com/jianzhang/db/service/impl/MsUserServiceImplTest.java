@@ -20,7 +20,7 @@ public class MsUserServiceImplTest extends SpringDatasourceApplicationTests {
         user.setUserAccount("232323232133");
         user.setCreateTime(new Date());
         user.setCreateBy("zj");
-        user.setUserName("4444445");
+        user.setUserName("4444446");
         user.setStatus("1");
         msUserService.addUser(user);
     }
