@@ -1,0 +1,27 @@
+server:
+  port: 8081
+#数据源配置
+spring:
+  datasource:
+      master:
+        driver-class-name: com.mysql.jdbc.Driver
+        type: com.zaxxer.hikari.HikariDataSource
+        jdbcUrl: jdbc:mysql://192.168.10.101:3306/posdb?useUnicode=true&characterEncoding=utf8&useSSL=false
+        username: root
+        password: root
+      slave1:
+        driver-class-name: com.mysql.jdbc.Driver
+        type: com.zaxxer.hikari.HikariDataSource
+        jdbcUrl: jdbc:mysql://192.168.10.102:3306/posdb??useUnicode=true&characterEncoding=utf8&useSSL=false
+        username: root
+        password: root
+      slave2:
+        driver-class-name: com.mysql.jdbc.Driver
+        type: com.zaxxer.hikari.HikariDataSource
+        jdbcUrl: jdbc:mysql://192.168.10.104:3306/posdb?useUnicode=true&characterEncoding=utf8&useSSL=false
+        username: root
+        password: root
+#mybatis配置
+mybatis:
+  type-aliases-package: com.jianzhang.db.mapper
+  mapper-locations: classpath:mapper/*Mapper.xml

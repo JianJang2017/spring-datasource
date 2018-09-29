@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds" debug="false">
+	<property name="logRoot" value="/home/tomcat/logs/spring-boot/logs" />
+	<property name="logName" value="spring-boot"/>
+	<property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{sessionId}] %-5level [%thread] %logger{80} :%msg%n" />
+
+	<appender name="CONSOLE-APPENDER" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${pattern}</pattern>
+		</encoder>
+	</appender>
+	<!-- 开发环境日志配置 -->
+	<springProfile name="dev">
+		<root level="info">
+			<appender-ref ref="CONSOLE-APPENDER" />
+		</root>
+	</springProfile>
+	<!-- 生产环境日志配置 -->
+	<springProfile name="product">
+		<!-- appender -->
+		<appender name="DEFAULT-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${logRoot}/${logName}.log</file>
+			<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<fileNamePattern>${logRoot}/%d{yyyy-MM-dd}/${logName}.log-%i.%d{yyyy-MM-dd}.zip</fileNamePattern>
+				<maxHistory>100</maxHistory>
+				<TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+					<MaxFileSize>200MB</MaxFileSize>
+				</TimeBasedFileNamingAndTriggeringPolicy>
+			</rollingPolicy>
+			<encoder>
+				<pattern>${pattern}</pattern>
+			</encoder>
+		</appender>
+
+		<appender name="ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${logRoot}/error.log</file>
+			<filter class="ch.qos.logback.classic.filter.LevelFilter">
+				<level>ERROR</level>
+				<onMatch>ACCEPT</onMatch>
+				<onMismatch>DENY</onMismatch>
+			</filter>
+			<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<fileNamePattern>${logRoot}/%d{yyyy-MM-dd}/error.log-%i.%d{yyyy-MM-dd}.zip</fileNamePattern>
+
+				<!--日志保留天数设置-->
+				<maxHistory>30</maxHistory>
+				<TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+					<MaxFileSize>100MB</MaxFileSize>
+				</TimeBasedFileNamingAndTriggeringPolicy>
+			</rollingPolicy>
+			<encoder>
+				<pattern>${pattern}</pattern>
+			</encoder>
+		</appender>
+		<!--访问日志-->
+		<appender name="ACCESSLOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${logRoot}/accessLogs.log</file>
+			<filter class="ch.qos.logback.classic.filter.LevelFilter">
+				<level>INFO</level>
+			</filter>
+			<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<fileNamePattern>${logRoot}/%d{yyyy-MM-dd}/accessLogs.log.%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
+				<!--日志保留天数设置-->
+				<maxHistory>100</maxHistory>
+				<TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+					<MaxFileSize>200MB</MaxFileSize>
+				</TimeBasedFileNamingAndTriggeringPolicy>
+			</rollingPolicy>
+			<encoder>
+				<pattern>${pattern}</pattern>
+			</encoder>
+		</appender>
+
+	</springProfile>
+	<springProfile name="product">
+		<!-- 按模块输出业务日志 -->
+		<logger name="ACCESSLOGS">
+			<level value="info" />
+			<appender-ref ref="ACCESSLOGS" />
+		</logger>
+		<root level="INFO">
+			<appender-ref ref="DEFAULT-APPENDER" />
+			<appender-ref ref="ERROR-APPENDER" />
+		</root>
+	</springProfile>
+</configuration>
